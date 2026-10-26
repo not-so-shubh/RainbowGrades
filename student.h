@@ -114,6 +114,10 @@ public:
     return "other";
   }
 
+  const std::string& getLinkedinUsername() const { return linkedin_username; }
+  const std::string& getGithubUsername() const { return github_username; }
+  const std::string& getPersonalWebpage() const { return personal_webpage; }
+
   const std::string& getDateRegistered() const { return date_registered; }
   std::string getDateRegisteredShort() const {
     return date_registered.substr(0, date_registered.find('T'));
@@ -192,6 +196,9 @@ public:
   void setGraded() { graded = true; }
   void setIndependentStudy() { independentstudy = true; }
   void setDateRegistered(const std::string &x) { date_registered = x; }
+  void setLinkedinUsername(const std::string &x) { linkedin_username = x; }
+  void setGithubUsername(const std::string &x) { github_username = x; }
+  void setPersonalWebpage(const std::string &x) { personal_webpage = x; }
 
   // grade data
   void setTestZone(int which_test, const std::string &zone)  { zones[which_test] = zone; }
@@ -272,6 +279,9 @@ private:
   bool lefty;
   
   std::string lastUpdate;
+  std::string linkedin_username;
+  std::string github_username;
+  std::string personal_webpage;
 
   int current_allowed_late_days;
   int default_allowed_late_days;

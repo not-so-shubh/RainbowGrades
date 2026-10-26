@@ -105,6 +105,7 @@ process_grades.out: \
 	${RAINBOW_GRADES_DIRECTORY}/main.cpp \
 	${RAINBOW_GRADES_DIRECTORY}/output.cpp \
 	${RAINBOW_GRADES_DIRECTORY}/table.cpp \
+	${RAINBOW_GRADES_DIRECTORY}/contact_info.cpp \
 	${RAINBOW_GRADES_DIRECTORY}/student.cpp \
 	${RAINBOW_GRADES_DIRECTORY}/zone.cpp \
 	${RAINBOW_GRADES_DIRECTORY}/benchmark.cpp \

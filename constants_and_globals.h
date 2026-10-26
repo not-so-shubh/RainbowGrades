@@ -18,6 +18,9 @@ extern bool DISPLAY_GRADE_DETAILS;
 extern bool DISPLAY_LATE_DAYS;
 extern bool DISPLAY_RANK_TO_INDIVIDUAL;
 extern bool DISPLAY_DATE_REGISTERED;
+extern bool DISPLAY_LINKEDIN_USERNAME;
+extern bool DISPLAY_GITHUB_USERNAME;
+extern bool DISPLAY_PERSONAL_WEBPAGE;
 
 // ==========================================================
 // messages for zone assignment

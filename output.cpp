@@ -14,6 +14,7 @@
 #include "student.h"
 #include "grade.h"
 #include "table.h"
+#include "contact_info.h"
 #include "benchmark.h"
 
 #include <nlohmann/json.hpp>
@@ -601,6 +602,10 @@ void start_table_output( bool /*for_instructor*/,
   std::vector<int> student_data;
 
   Table table;
+  const bool contact_columns[] = {csv_mode || DISPLAY_LINKEDIN_USERNAME,
+                                  csv_mode || DISPLAY_GITHUB_USERNAME,
+                                  csv_mode || DISPLAY_PERSONAL_WEBPAGE};
+  const char *contact_labels[] = {"LinkedIn Username", "GitHub Username", "Personal Webpage"};
 
   GLOBAL_EWS_OUTPUT = std::ofstream("ews_output.txt");
   assert (GLOBAL_EWS_OUTPUT.good());
@@ -760,6 +765,13 @@ void start_table_output( bool /*for_instructor*/,
 
   // =====================================================================================================
   // =====================================================================================================
+  // Contact columns are instructor-only and appended to preserve existing indices.
+  for (int i = 0; i < 3; i++) {
+    if (contact_columns[i]) {
+      table.set(0,counter++,TableCell("ffffff",contact_labels[i],"",0,CELL_CONTENTS_VISIBLE_INSTRUCTOR));
+    }
+  }
+
   // HORIZONTAL GRAY DIVIDER
   for (int i = 0; i < table.numCols(); i++) {
     table.set(1,i,TableCell(grey_divider));
@@ -1192,6 +1204,15 @@ void start_table_output( bool /*for_instructor*/,
           //table.set(myrow,counter++,TableCell(color,""));
         }
         table.set(myrow,counter++,TableCell(grey_divider));
+      }
+    }
+    const std::string contacts[] = {this_student->getLinkedinUsername(), this_student->getGithubUsername(), this_student->getPersonalWebpage()};
+    for (int i = 0; i < 3; i++) {
+      if (contact_columns[i]) {
+        const std::string value = csv_mode ? contacts[i] : ContactInfoHTML(contacts[i], static_cast<ContactField>(i));
+        TableCell cell(default_color,value,"",0,CELL_CONTENTS_VISIBLE_INSTRUCTOR);
+        if (csv_mode) cell.LiteralCSV();
+        table.set(myrow,counter++,cell);
       }
     }
   }

@@ -50,6 +50,7 @@ public:
   bool ShowNoteToStudent() const { return show_note_to_student; }
   bool ShowNoteToInstructor() const { return show_note_to_instructor; }
   TableCell& MakeSticky() { sticky_col = true; return *this; }
+  TableCell& LiteralCSV() { literal_csv = true; return *this; }
   void SetNoteVisibility(bool s, bool i) {
     show_note_to_student = s;
     show_note_to_instructor = i;
@@ -58,6 +59,7 @@ public:
   bool sticky_row = false;
   int col_num;
 private:
+  bool literal_csv = false;
   std::string note;
   bool show_note_to_student;
   bool show_note_to_instructor;

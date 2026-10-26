@@ -132,6 +132,9 @@ bool DISPLAY_GRADE_DETAILS = false;
 bool DISPLAY_LATE_DAYS = false;
 bool DISPLAY_RANK_TO_INDIVIDUAL = false;
 bool DISPLAY_DATE_REGISTERED = false;
+bool DISPLAY_LINKEDIN_USERNAME = false;
+bool DISPLAY_GITHUB_USERNAME = false;
+bool DISPLAY_PERSONAL_WEBPAGE = false;
 
 std::vector<std::string> MESSAGES;
 
@@ -787,6 +790,12 @@ void preprocesscustomizationfile(const std::string &now_string,
       DISPLAY_RANK_TO_INDIVIDUAL = true;
     } else if (token == "date_registered") {
       DISPLAY_DATE_REGISTERED = true;
+    } else if (token == "linkedin_username") {
+      DISPLAY_LINKEDIN_USERNAME = true;
+    } else if (token == "github_username") {
+      DISPLAY_GITHUB_USERNAME = true;
+    } else if (token == "personal_webpage") {
+      DISPLAY_PERSONAL_WEBPAGE = true;
     } else if (token == "display_benchmark") {
       continue;
     } else if (token == "section") {
@@ -1201,6 +1210,16 @@ void load_student_grades(std::vector<Student*> &students) {
     // non gradeables
     if (token == "user_id") {
       s->setUserName(j[token].get<std::string>());
+    } else if (token == "linkedin_username" || token == "github_username" || token == "personal_webpage") {
+      if (!j[token].is_null() && !j[token].is_string()) {
+        std::cerr << "ERROR: " << filename << ": " << token
+                  << " must be a string or null (got " << j[token].type_name() << ")" << std::endl;
+        exit(1);
+      }
+      const std::string value = j[token].is_null() ? "" : j[token].get<std::string>();
+      if (token == "linkedin_username") s->setLinkedinUsername(value);
+      else if (token == "github_username") s->setGithubUsername(value);
+      else s->setPersonalWebpage(value);
     } else if (token == "legal_first_name" || token == "legal_given_name") {
       s->setLegalFirstName(j[token].get<std::string>());
     } else if (token == "legal_last_name" || token == "legal_family_name") {

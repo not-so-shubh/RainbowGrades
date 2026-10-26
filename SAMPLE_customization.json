@@ -31,6 +31,8 @@ Going forward we expect more users to use a web interface to generate this file.
     "Note: Please be patient with data entry/grade corrections for the most recent lab, homework, and test.", 
     "Please contact your graduate lab TA if a grade remains missing or incorrect for more than a week."
   ], 
+  /* Optional instructor-only columns: "linkedin_username", "github_username",
+     "personal_webpage". Omitted by default; all three are always in the CSV. */
   "display": [
     "instructor_notes", 
     "grade_summary", 

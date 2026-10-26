@@ -26,6 +26,42 @@ std::string CSVSanitizeString(const std::string& s){
     return ret;
 }
 
+namespace {
+
+// Contact data is literal text; keep the established grade-cell serializer unchanged.
+std::string literal_csv_string(std::string value) {
+  if (value.empty()) return value;
+  unsigned char first = value[0];
+  // Also cover UTF-8 whitespace/BOM prefixes that spreadsheet importers may ignore.
+  bool unicode_space = value.compare(0, 2, "\xC2\x85") == 0 || value.compare(0, 2, "\xC2\xA0") == 0
+      || value.compare(0, 3, "\xEF\xBB\xBF") == 0 || value.compare(0, 3, "\xE1\x9A\x80") == 0
+      || value.compare(0, 3, "\xE3\x80\x80") == 0;
+  if (value.size() >= 3 && first == 0xe2) {
+    unsigned char second = value[1], third = value[2];
+    unicode_space = unicode_space || (second == 0x80 && ((third >= 0x80 && third <= 0x8b) || third == 0xa8 || third == 0xa9 || third == 0xaf))
+        || (second == 0x81 && (third == 0x9f || third == 0xa0));
+  }
+  if (first <= 0x20 || first == 0x7f || first == '=' || first == '+' || first == '-' || first == '@'
+      || unicode_space) {
+    value.insert(0, "'");
+  }
+  // Render malformed NUL bytes as visible \0 text for CSV reader compatibility.
+  std::size_t nul = 0;
+  while ((nul = value.find('\0', nul)) != std::string::npos) {
+    value.replace(nul, 1, "\\0");
+    nul += 2;
+  }
+  if (value.find_first_of(",\"\r\n") == std::string::npos) return value;
+  std::string result = "\"";
+  for (char c : value) {
+    if (c == '"') result += '"';
+    result += c;
+  }
+  return result + '"';
+}
+
+} // namespace
+
 TableCell::TableCell(const std::string& c, const std::string& d, const std::string& n, int ldu,
                      CELL_CONTENTS_STATUS v, const std::string& a, int s, int r) {
 
@@ -254,7 +290,7 @@ std::string TableCell::make_cell_string(bool csv_mode) const{
             std::cerr << "Printing note: " << mynote << std::endl;
         }
     }
-    return CSVSanitizeString(ret);
+    return csv_mode && literal_csv ? literal_csv_string(ret) : CSVSanitizeString(ret);
 }
 
 
